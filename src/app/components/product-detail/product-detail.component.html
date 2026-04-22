@@ -1,0 +1,33 @@
+<section class="detail" *ngIf="product">
+  <div class="container detail-grid">
+
+    <img [src]="product.image" [alt]="product.name">
+
+    <div class="detail-content">
+      <a routerLink="/" class="back-btn">← Voltar</a>
+
+      <h1>{{ product.name }}</h1>
+
+      <p class="price">
+        R$ {{ product.price.toFixed(2) }}
+      </p>
+
+      <p class="description">
+        {{ product.description }}
+      </p>
+
+      <h3>Tamanhos disponíveis</h3>
+
+      <div class="sizes">
+        <span *ngFor="let size of product.sizes">
+          {{ size }}
+        </span>
+      </div>
+
+      <button class="buy-btn" (click)="openWhatsapp()">
+        Comprar no WhatsApp
+      </button>
+    </div>
+
+  </div>
+</section>

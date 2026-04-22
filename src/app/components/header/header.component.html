@@ -1,58 +1,77 @@
 <header class="header" [class.scrolled]="isScrolled">
   <div class="header-top">
     <div class="container">
-      <span><i class="fas fa-map-marker-alt"></i> Av. Sampaio Vidal, 734 - Centro, Marília/SP</span>
+      <span><i class="fas fa-map-marker-alt"></i> Av. Sampaio Vidal, 734</span>
       <span><i class="fab fa-whatsapp"></i> (14) 99167-7085</span>
-      <span><i class="fas fa-clock"></i> Seg a Sáb: 09h às 19h</span>
     </div>
   </div>
 
   <nav class="navbar">
     <div class="container">
-      <!-- Logo -->
+
       <div class="logo" (click)="scrollTo('inicio')">
         <span class="logo-saldao">SALDÃO</span>
         <span class="logo-marilia">MARÍLIA</span>
-        <div class="logo-tag">MODA & PREÇO</div>
       </div>
 
-      <!-- Desktop Menu -->
-      <ul class="nav-links" [class.mobile-open]="isMobileMenuOpen">
+      <ul class="nav-links">
         <li><a (click)="scrollTo('inicio')" class="nav-link">Início</a></li>
         <li><a (click)="scrollTo('produtos')" class="nav-link">Produtos</a></li>
-        <li><a (click)="scrollTo('promocoes')" class="nav-link">Promoções</a></li>
-        <li><a (click)="scrollTo('sobre')" class="nav-link">Sobre Nós</a></li>
         <li><a (click)="scrollTo('contato')" class="nav-link">Contato</a></li>
       </ul>
 
-      <!-- CTA + Hamburger -->
       <div class="header-actions">
-        <button class="btn-primary btn-ofertas" (click)="scrollTo('promocoes')">
-          <i class="fas fa-bolt"></i> Ver Ofertas
+
+        <button class="cart-btn" (click)="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count">{{ cart.getCount() }}</span>
         </button>
-        <button class="hamburger" (click)="toggleMobileMenu()" [class.active]="isMobileMenuOpen">
+
+        <button class="hamburger" (click)="toggleMobileMenu()">
           <span></span>
           <span></span>
           <span></span>
         </button>
+
       </div>
     </div>
   </nav>
 
-  <!-- Mobile Overlay -->
-  <div class="mobile-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+  <!-- Carrinho -->
+  <div class="cart-panel" [class.open]="cartOpen">
+  <div class="cart-header">
+    <h3>Seu Carrinho</h3>
+    <button (click)="toggleCart()">✕</button>
+  </div>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" [class.active]="isMobileMenuOpen">
-    <ul>
-      <li><a (click)="scrollTo('inicio')"><i class="fas fa-home"></i> Início</a></li>
-      <li><a (click)="scrollTo('produtos')"><i class="fas fa-tshirt"></i> Produtos</a></li>
-      <li><a (click)="scrollTo('promocoes')"><i class="fas fa-tag"></i> Promoções</a></li>
-      <li><a (click)="scrollTo('sobre')"><i class="fas fa-store"></i> Sobre Nós</a></li>
-      <li><a (click)="scrollTo('contato')"><i class="fas fa-envelope"></i> Contato</a></li>
-    </ul>
-    <button class="btn-primary" (click)="scrollTo('promocoes')">
-      <i class="fas fa-bolt"></i> Ver Todas as Ofertas
+  <div class="cart-body">
+
+    <div *ngIf="cartItems.length === 0">
+      Carrinho vazio
+    </div>
+
+    <div class="cart-item" *ngFor="let item of cartItems; let i = index">
+      <img [src]="item.image">
+
+      <div>
+        <h4>{{ item.name }}</h4>
+        <p>
+          R$ {{ (item.price * item.quantity).toFixed(2) }}
+          <span> (x{{ item.quantity }})</span>
+        </p>
+      </div>
+
+      <button (click)="removeItem(i)">🗑</button>
+    </div>
+
+  </div>
+
+  <div class="cart-footer" *ngIf="cartItems.length > 0">
+    <strong>Total: R$ {{ getTotal().toFixed(2) }}</strong>
+
+    <button class="finish-btn" (click)="finishOrder()">
+      Finalizar no WhatsApp
     </button>
   </div>
+</div>
 </header>

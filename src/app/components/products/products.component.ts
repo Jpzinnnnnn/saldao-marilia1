@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 export interface Product {
   id: number;
@@ -16,14 +17,17 @@ export interface Product {
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
 })
 export class ProductsComponent {
   activeCategory = 'todos';
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+  private cdr: ChangeDetectorRef,
+  private cartService: CartService
+) {}
 
   categories = [
     { id: 'todos', label: 'Todos' },
@@ -97,35 +101,50 @@ export class ProductsComponent {
       category: 'calcados'
     },
   ];
-  trackById(index: number, item: Product) {
-  return item.id;
-}
+
   filteredProducts: Product[] = [];
 
-ngOnInit() {
-  this.filteredProducts = this.allProducts;
-}
-
-setCategory(cat: string): void {
-  this.activeCategory = cat;
-
-  if (cat === 'todos') {
-    this.filteredProducts = [...this.allProducts];
-  } else {
-    this.filteredProducts = this.allProducts.filter(p => p.category === cat);
+  ngOnInit() {
+    this.filteredProducts = this.allProducts;
   }
 
-  // força o Angular atualizar a tela
-  this.cdr.detectChanges();
-}
+  trackById(index: number, item: Product) {
+    return item.id;
+  }
+
+  setCategory(cat: string): void {
+    this.activeCategory = cat;
+
+    if (cat === 'todos') {
+      this.filteredProducts = [...this.allProducts];
+    } else {
+      this.filteredProducts = this.allProducts.filter(
+        p => p.category === cat
+      );
+    }
+
+    this.cdr.detectChanges();
+  }
 
   openWhatsapp(productName: string): void {
-    const msg = encodeURIComponent(`Olá! Tenho interesse no produto: ${productName}. Ainda está disponível?`);
-    window.open(`https://wa.me/5514991677085?text=${msg}`, '_blank');
+    const msg = encodeURIComponent(
+      `Olá! Tenho interesse no produto: ${productName}. Ainda está disponível?`
+    );
+
+    window.open(
+      `https://wa.me/5514991677085?text=${msg}`,
+      '_blank'
+    );
   }
 
   getDiscount(product: Product): number {
     if (!product.oldPrice) return 0;
-    return Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+
+    return Math.round(
+      ((product.oldPrice - product.price) / product.oldPrice) * 100
+    );
   }
+addToCart(product: Product): void {
+  this.cartService.addItem(product);
+}
 }

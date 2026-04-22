@@ -13,23 +13,16 @@
 
     <!-- Category Filter -->
     <div class="category-filter reveal">
-      <button
-        *ngFor="let cat of categories"
-        class="filter-btn"
-        [class.active]="activeCategory === cat.id"
-        (click)="setCategory(cat.id)"
-      >
+      <button *ngFor="let cat of categories" class="filter-btn" [class.active]="activeCategory === cat.id"
+        (click)="setCategory(cat.id)">
         {{ cat.label }}
       </button>
     </div>
 
     <!-- Products Grid -->
     <div class="products-grid">
-      <div
-        class="product-card"
-        *ngFor="let product of filteredProducts; let i = index; trackBy: trackById"
-        [style.animation-delay]="(i * 0.1) + 's'"
-      >
+      <div class="product-card" *ngFor="let product of filteredProducts; let i = index; trackBy: trackById"
+        [style.animation-delay]="(i * 0.1) + 's'" [routerLink]="['/produto', product.id]">
         <!-- Badge -->
         <div class="card-badge" *ngIf="product.tag" [style.background]="product.tagColor">
           {{ product.tag }}
@@ -38,9 +31,11 @@
         <!-- Image -->
         <div class="card-image">
           <img [src]="product.image" [alt]="product.name" loading="lazy" />
+
           <div class="card-overlay">
-            <button class="overlay-btn" (click)="openWhatsapp(product.name)">
-              <i class="fab fa-whatsapp"></i> Pedir pelo WhatsApp
+            <button class="overlay-btn" (click)="$event.stopPropagation(); openWhatsapp(product.name)">
+              <i class="fab fa-whatsapp"></i>
+              Pedir pelo WhatsApp
             </button>
           </div>
         </div>
@@ -48,22 +43,28 @@
         <!-- Content -->
         <div class="card-body">
           <span class="card-category">{{ product.category }}</span>
+
           <h3 class="card-name">{{ product.name }}</h3>
 
           <div class="card-pricing">
             <span class="card-old-price" *ngIf="product.oldPrice">
               R$ {{ product.oldPrice.toFixed(2) }}
             </span>
+
             <div class="card-price-row">
-              <span class="card-price">R$ {{ product.price.toFixed(2) }}</span>
+              <span class="card-price">
+                R$ {{ product.price.toFixed(2) }}
+              </span>
+
               <span class="discount-badge" *ngIf="product.oldPrice">
                 -{{ getDiscount(product) }}%
               </span>
             </div>
           </div>
 
-          <button class="btn-buy" (click)="openWhatsapp(product.name)">
-            <i class="fas fa-shopping-cart"></i> Comprar
+          <button class="btn-buy" (click)="$event.stopPropagation(); addToCart(product)">
+            <i class="fas fa-cart-plus"></i>
+            Adicionar
           </button>
         </div>
       </div>
@@ -72,8 +73,10 @@
     <!-- Bottom CTA -->
     <div class="products-cta reveal">
       <p>Quer ver mais produtos? Fale conosco pelo WhatsApp!</p>
+
       <a href="https://wa.me/5514991677085" target="_blank" class="btn-primary">
-        <i class="fab fa-whatsapp"></i> Ver Mais Produtos
+        <i class="fab fa-whatsapp"></i>
+        Ver Mais Produtos
       </a>
     </div>
   </div>

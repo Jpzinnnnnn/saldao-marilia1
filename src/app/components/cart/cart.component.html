@@ -1,0 +1,26 @@
+<div class="cart-box">
+  <h2>🛒 Meu Carrinho</h2>
+
+  <div *ngIf="(cart.cartItems$ | async) as items">
+    <div *ngIf="items.length === 0" class="empty">Seu carrinho está vazio</div>
+
+    <div class="item" *ngFor="let item of items">
+      <img [src]="item.image" [alt]="item.name">
+      <div class="info">
+        <h3>{{item.name}}</h3>
+        <p>R$ {{item.price}}</p>
+        <div class="qty">
+          <button (click)="cart.decrease(item.id)">-</button>
+          <span>{{item.quantity}}</span>
+          <button (click)="cart.increase(item.id)">+</button>
+        </div>
+      </div>
+      <button class="remove" (click)="cart.remove(item.id)">✕</button>
+    </div>
+
+    <div class="footer" *ngIf="items.length > 0">
+      <h3>Total: R$ {{cart.getTotal()}}</h3>
+      <button class="finish">Finalizar Compra</button>
+    </div>
+  </div>
+</div>
